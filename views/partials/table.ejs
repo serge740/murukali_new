@@ -1,0 +1,358 @@
+<div class="container-tab">
+  <div class="table">
+
+
+
+    <div class="column" style="min-width: 100px;">
+      <h1>N.o</h1>
+      <% for (var i=1; i < rowz.length + 1; i++) { %>
+        <div class="data-values">
+          <%= i %>
+        </div>
+        <% } %>
+    </div>
+
+
+    <% let totals={}; 
+    columnz.forEach(column=> {
+      totals[column.col_id] = 0;
+      });
+
+
+
+      columnz.forEach((column) => { %>
+      <div class="column">
+
+        <div class="action-col">
+
+
+          <a href="/change-column/<%= column.col_id %>?act_id=<%= tablez.act_id %>">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+              <path
+                d="M23.8125 4.03125C22.722656 4.03125 21.613281 4.449219 20.78125 5.28125L11.5 14.5625L6.03125 16.65625L5.5 16.875L5.40625 17.4375L4 26.84375L3.8125 28.1875L5.15625 28L14.5625 26.59375L15.125 26.5L15.34375 25.96875L17.3125 20.78125L17.8125 20.3125L26.8125 11.3125C28.425781 9.699219 28.457031 7.109375 26.9375 5.4375L26.8125 5.28125C25.980469 4.449219 24.902344 4.03125 23.8125 4.03125 Z M 23.8125 6C24.375 6 24.9375 6.25 25.40625 6.71875C26.34375 7.65625 26.34375 8.96875 25.40625 9.90625L20.375 14.9375L17.1875 11.75L22.21875 6.71875C22.6875 6.25 23.25 6 23.8125 6 Z M 15.75 13.1875L18.9375 16.375L17.125 18.1875L13.9375 15 Z M 12.40625 16.34375L12.4375 16.34375L15.65625 19.5625L13.6875 24.71875L7.84375 25.5625L10.53125 22.875C10.585938 22.878906 10.632813 22.90625 10.6875 22.90625C11.570313 22.90625 12.3125 22.195313 12.3125 21.3125C12.3125 20.429688 11.570313 19.6875 10.6875 19.6875C9.804688 19.6875 9.09375 20.429688 9.09375 21.3125C9.09375 21.367188 9.121094 21.414063 9.125 21.46875L6.4375 24.15625L7.28125 18.3125Z"
+                fill="#67ED29" />
+            </svg>
+          </a>
+
+          <div class="deleting-column" data-col_id="<%= column.col_id %>">
+
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+              <path
+                d="M6.496094 1C5.675781 1 5 1.675781 5 2.496094L5 3L2 3L2 4L3 4L3 12.5C3 13.328125 3.671875 14 4.5 14L10.5 14C11.328125 14 12 13.328125 12 12.5L12 4L13 4L13 3L10 3L10 2.496094C10 1.675781 9.324219 1 8.503906 1 Z M 6.496094 2L8.503906 2C8.785156 2 9 2.214844 9 2.496094L9 3L6 3L6 2.496094C6 2.214844 6.214844 2 6.496094 2 Z M 5 5L6 5L6 12L5 12 Z M 7 5L8 5L8 12L7 12 Z M 9 5L10 5L10 12L9 12Z"
+                fill="#ED3029" />
+            </svg>
+          </div>
+        </div>
+        <h1>
+          <%= column.col_name %>
+        </h1>
+        <% rowz.forEach((row)=> { %>
+          <% const dataEntry=dataz.find(data=> data.col_id === column.col_id && data.rowz_id === row.rowz_id);
+            const dataValue = dataEntry ? parseFloat(dataEntry.dataz_value) || 0 : 0;
+            if (column.isTotal) {
+            totals[column.col_id] += dataValue;
+
+            }
+            %>
+            <div class="data-values <%= dataEntry ? '' : 'red' %>">
+              <%= dataEntry ? dataEntry.dataz_value : 'empty' %>
+            </div>
+            <% }) %>
+              <% if (column.isTotal) { %>
+                <div class="data-values">
+                  <strong>Total: <%= totals[column.col_id].toFixed(2) %></strong>
+                </div>
+                <% } %>
+      </div>
+      <% }) %>
+
+        <% if (tablez.isDate) { %>
+          <div class="column min">
+            <div class="action-col">
+              <div class="deleting-date">
+
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+                  <path
+                    d="M6.496094 1C5.675781 1 5 1.675781 5 2.496094L5 3L2 3L2 4L3 4L3 12.5C3 13.328125 3.671875 14 4.5 14L10.5 14C11.328125 14 12 13.328125 12 12.5L12 4L13 4L13 3L10 3L10 2.496094C10 1.675781 9.324219 1 8.503906 1 Z M 6.496094 2L8.503906 2C8.785156 2 9 2.214844 9 2.496094L9 3L6 3L6 2.496094C6 2.214844 6.214844 2 6.496094 2 Z M 5 5L6 5L6 12L5 12 Z M 7 5L8 5L8 12L7 12 Z M 9 5L10 5L10 12L9 12Z"
+                    fill="#ED3029" />
+                </svg>
+              </div>
+            </div>
+
+            <h1>Date</h1>
+            <% rowz.forEach((rows)=> { %>
+              <div class="time-date">
+                <%- moment(rows.rowz_date).format('ddd, Do / MMM / yyyy, H:m') %>
+              </div>
+              <% }) %>
+          </div>
+          <% } %>
+
+            <% if (tablez.isDay) { %>
+
+              <div class="column">
+                <div class="action-col">
+
+                  <div class="deleting-day">
+
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+                      <path
+                        d="M6.496094 1C5.675781 1 5 1.675781 5 2.496094L5 3L2 3L2 4L3 4L3 12.5C3 13.328125 3.671875 14 4.5 14L10.5 14C11.328125 14 12 13.328125 12 12.5L12 4L13 4L13 3L10 3L10 2.496094C10 1.675781 9.324219 1 8.503906 1 Z M 6.496094 2L8.503906 2C8.785156 2 9 2.214844 9 2.496094L9 3L6 3L6 2.496094C6 2.214844 6.214844 2 6.496094 2 Z M 5 5L6 5L6 12L5 12 Z M 7 5L8 5L8 12L7 12 Z M 9 5L10 5L10 12L9 12Z"
+                        fill="#ED3029" />
+                    </svg>
+                  </div>
+
+                </div>
+
+                <h1>Day</h1>
+                <% rowz.forEach((rows)=> { %>
+                  <div class="data-values">
+                    <%- moment(rows.rowz_date).format('dddd') %>
+                  </div>
+                  <% }) %>
+
+              </div>
+              <% } %>
+
+                <% if (rowz.length> 0) { %>
+                  <div class="column">
+
+                    <h1>Action</h1>
+                    <% rowz.forEach((rows)=> { %>
+                      <div class="data-values">
+                        <a href="/update-data/<%= rows.rowz_id %>">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26">
+                            <path
+                              d="M3 0C1.34375 0 0 1.34375 0 3L0 21C0 22.65625 1.34375 24 3 24L12.4375 24L13 22L3 22C2.449219 22 2 21.550781 2 21L2 4L22 4L22 12.4375C22.414063 12.234375 22.867188 12.125 23.34375 12.125C23.566406 12.125 23.785156 12.140625 24 12.1875L24 3C24 1.34375 22.65625 0 21 0 Z M 5 8L5 10L7 10L7 8 Z M 9 8L9 10L19 10L19 8 Z M 5 12L5 14L7 14L7 12 Z M 9 12L9 14L19 14L19 12 Z M 23.28125 14.09375C23.007813 14.09375 22.738281 14.199219 22.53125 14.40625L21.3125 15.625L24.34375 18.6875L25.5625 17.4375C25.976563 17.023438 25.980469 16.359375 25.5625 15.9375L24.0625 14.40625C23.851563 14.195313 23.554688 14.09375 23.28125 14.09375 Z M 5 16L5 18L7 18L7 16 Z M 9 16L9 18L16.09375 18L18.09375 16 Z M 20.28125 16.59375L15.34375 21.5C15.277344 21.554688 15.214844 21.628906 15.1875 21.71875L14.125 25.34375C14.078125 25.5 14.136719 25.664063 14.25 25.78125C14.335938 25.867188 14.445313 25.90625 14.5625 25.90625C14.605469 25.90625 14.648438 25.886719 14.6875 25.875L18.28125 24.8125C18.367188 24.789063 18.445313 24.75 18.5 24.6875L23.4375 19.78125 Z M 16 22.15625L17.53125 22.46875L17.84375 24.03125L15.8125 24.625L15.40625 24.1875Z"
+                              fill="green" />
+                          </svg>
+                        </a>
+                        <p class="deleting-id" data-rowz_id='<%= rows.rowz_id %>'></p>
+                        <button class="delete-data">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30">
+                            <path
+                              d="M14.984375 2.4863281 A 1.0001 1.0001 0 0 0 14 3.5L14 4L8.5 4 A 1.0001 1.0001 0 0 0 7.4863281 5L6 5 A 1.0001 1.0001 0 1 0 6 7L24 7 A 1.0001 1.0001 0 1 0 24 5L22.513672 5 A 1.0001 1.0001 0 0 0 21.5 4L16 4L16 3.5 A 1.0001 1.0001 0 0 0 14.984375 2.4863281 z M 6 9L7.7929688 24.234375C7.9109687 25.241375 8.7633438 26 9.7773438 26L20.222656 26C21.236656 26 22.088031 25.241375 22.207031 24.234375L24 9L6 9 z"
+                              fill="red" />
+                          </svg>
+                        </button>
+                      </div>
+                      <% }) %>
+                  </div>
+                  <% } %>
+  </div>
+</div>
+
+<h1 class="exist">exist column:  <% columnz.forEach(column=> { %>
+  <%=column.col_name  %>,
+  <% }) %>
+  <% if (tablez.isDate) { %>
+      date,
+      <% } %>
+  <% if (tablez.isDay) { %>
+    day
+    <% } %>.
+    </h1>
+
+
+<a href="/add-data/<%= tablez.act_id %>" class="create-table-link1">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+    <path
+      d="M2.4824219 1.9824219C1.6598905 1.9824219 0.98242185 2.6598905 0.98242188 3.4824219L0.98242188 11.482422C0.98242188 12.304953 1.6598905 12.982422 2.4824219 12.982422L7.2714844 12.982422C7.8884307 14.732826 9.5425032 16 11.5 16C13.979359 16 16 13.979359 16 11.5C16 10.430435 15.609096 9.4589913 14.982422 8.6855469L14.982422 3.4824219C14.982422 2.6598905 14.304953 1.9824219 13.482422 1.9824219L2.4824219 1.9824219 z M2.4824219 2.9824219L13.482422 2.9824219C13.76389 2.9824219 13.982422 3.2009533 13.982422 3.4824219L13.982422 3.9824219L1.9824219 3.9824219L1.9824219 3.4824219C1.9824219 3.2009533 2.2009533 2.9824219 2.4824219 2.9824219 z M1.9824219 4.9824219L13.982422 4.9824219L13.982422 7.7519531C13.398407 7.3635984 12.713422 7.1284203 11.982422 7.0488281L11.982422 6.9824219L5.9824219 6.9824219L5.9824219 7.9824219L8.7285156 7.9824219C8.3647809 8.2698257 8.0341598 8.5979991 7.7734375 8.9824219L5.9824219 8.9824219L5.9824219 9.9824219L7.28125 9.9824219C7.1090013 10.458734 7 10.96537 7 11.5C7 11.66533 7.0313214 11.821634 7.0488281 11.982422L2.4824219 11.982422C2.2009533 11.982422 1.9824219 11.76389 1.9824219 11.482422L1.9824219 4.9824219 z M3.9824219 6.9824219L3.9824219 7.9824219L4.9824219 7.9824219L4.9824219 6.9824219L3.9824219 6.9824219 z M11.5 8C13.438919 8 15 9.5610811 15 11.5C15 13.438919 13.438919 15 11.5 15C9.5610811 15 8 13.438919 8 11.5C8 9.5610811 9.5610811 8 11.5 8 z M3.9824219 8.9824219L3.9824219 9.9824219L4.9824219 9.9824219L4.9824219 8.9824219L3.9824219 8.9824219 z M11 9L11 11L9 11L9 12L11 12L11 14L12 14L12 12L14 12L14 11L12 11L12 9L11 9 z" />
+  </svg>
+  Add Data
+</a>
+
+
+<% if (rowz.length==0) { %>
+  <p>No data available. Please add some.</p>
+  <% } %>
+
+
+    </div>
+
+
+
+
+    </div>
+    
+
+      <!-- Display totals -->
+      <div class="totals">
+        <% columnz.forEach(column => { %>
+          <% if (column.isTotal) { %>
+            <div class="data-values">
+              <strong><h2>Total <%= column.col_name %>: </h2> <%= totals[column.col_id].toFixed(2) %></strong>
+            </div>
+          <% } %>
+        <% }) %>
+      </div>
+    </div>
+
+
+
+
+      <div class="table1">
+        <div class="column1">
+          <% rowz.forEach((rows, key) => { %>
+            <div class="data-values">
+              <h1>*Row <%= key + 1 %> </h1>
+      
+              <% columnz.forEach(column => { %>
+                <div class="values">
+                  <div class="action-row">
+                    <a href="/change-column/<%= column.col_id %>" title="updates the name of column" >
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+                        <path
+                          d="M23.8125 4.03125C22.722656 4.03125 21.613281 4.449219 20.78125 5.28125L11.5 14.5625L6.03125 16.65625L5.5 16.875L5.40625 17.4375L4 26.84375L3.8125 28.1875L5.15625 28L14.5625 26.59375L15.125 26.5L15.34375 25.96875L17.3125 20.78125L17.8125 20.3125L26.8125 11.3125C28.425781 9.699219 28.457031 7.109375 26.9375 5.4375L26.8125 5.28125C25.980469 4.449219 24.902344 4.03125 23.8125 4.03125 Z M 23.8125 6C24.375 6 24.9375 6.25 25.40625 6.71875C26.34375 7.65625 26.34375 8.96875 25.40625 9.90625L20.375 14.9375L17.1875 11.75L22.21875 6.71875C22.6875 6.25 23.25 6 23.8125 6 Z M 15.75 13.1875L18.9375 16.375L17.125 18.1875L13.9375 15 Z M 12.40625 16.34375L12.4375 16.34375L15.65625 19.5625L13.6875 24.71875L7.84375 25.5625L10.53125 22.875C10.585938 22.878906 10.632813 22.90625 10.6875 22.90625C11.570313 22.90625 12.3125 22.195313 12.3125 21.3125C12.3125 20.429688 11.570313 19.6875 10.6875 19.6875C9.804688 19.6875 9.09375 20.429688 9.09375 21.3125C9.09375 21.367188 9.121094 21.414063 9.125 21.46875L6.4375 24.15625L7.28125 18.3125Z"
+                          fill="#67ED29" />
+                      </svg>
+                    </a>
+          
+                    <div class="deleting-column" title="doesnt delete data, delete column" data-col_id="<%= column.col_id %>">
+          
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+                        <path
+                          d="M6.496094 1C5.675781 1 5 1.675781 5 2.496094L5 3L2 3L2 4L3 4L3 12.5C3 13.328125 3.671875 14 4.5 14L10.5 14C11.328125 14 12 13.328125 12 12.5L12 4L13 4L13 3L10 3L10 2.496094C10 1.675781 9.324219 1 8.503906 1 Z M 6.496094 2L8.503906 2C8.785156 2 9 2.214844 9 2.496094L9 3L6 3L6 2.496094C6 2.214844 6.214844 2 6.496094 2 Z M 5 5L6 5L6 12L5 12 Z M 7 5L8 5L8 12L7 12 Z M 9 5L10 5L10 12L9 12Z"
+                          fill="#ED3029" />
+                      </svg>
+                    </div>
+                  </div>
+      
+                  <% var dataEntry = dataz.find(data => data.col_id === column.col_id && data.rowz_id === rows.rowz_id) %>
+               
+                  
+                  <h3>- <%= column.col_name %>:</h3>
+                  <p class="<%= dataEntry ? '' : 'red' %>">
+                    <%= dataEntry ? dataEntry.dataz_value : "empty" %>
+                  </p>
+                </div>
+              <% }) %>
+      
+              <% if (tablez.isDate) { %>
+                <div class="values">
+                  <h3>- Date:</h3>
+                  <%- moment(rows.rowz_date).format('ddd, Do / MMM / yyyy, H:m') %>
+                </div>
+              <% } %>
+      
+              <% if (tablez.isDay) { %>
+                <div class="values">
+                  <h3>- Day:</h3>
+                  <%- moment(rows.rowz_date).format('dddd') %>
+                </div>
+              <% } %>
+      
+              <% if (rowz.length > 0) { %>
+                <div class="values">
+                  <h3>- Action:</h3>
+                  <div class="valuez">
+                    <a href="/update-data/<%= rows.rowz_id %>">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26">
+                        <path
+                          d="M3 0C1.34375 0 0 1.34375 0 3L0 21C0 22.65625 1.34375 24 3 24L12.4375 24L13 22L3 22C2.449219 22 2 21.550781 2 21L2 4L22 4L22 12.4375C22.414063 12.234375 22.867188 12.125 23.34375 12.125C23.566406 12.125 23.785156 12.140625 24 12.1875L24 3C24 1.34375 22.65625 0 21 0 Z M 5 8L5 10L7 10L7 8 Z M 9 8L9 10L19 10L19 8 Z M 5 12L5 14L7 14L7 12 Z M 9 12L9 14L19 14L19 12 Z M 23.28125 14.09375C23.007813 14.09375 22.738281 14.199219 22.53125 14.40625L21.3125 15.625L24.34375 18.6875L25.5625 17.4375C25.976563 17.023438 25.980469 16.359375 25.5625 15.9375L24.0625 14.40625C23.851563 14.195313 23.554688 14.09375 23.28125 14.09375 Z M 5 16L5 18L7 18L7 16 Z M 9 16L9 18L16.09375 18L18.09375 16 Z M 20.28125 16.59375L15.34375 21.5C15.277344 21.554688 15.214844 21.628906 15.1875 21.71875L14.125 25.34375C14.078125 25.5 14.136719 25.664063 14.25 25.78125C14.335938 25.867188 14.445313 25.90625 14.5625 25.90625C14.605469 25.90625 14.648438 25.886719 14.6875 25.875L18.28125 24.8125C18.367188 24.789063 18.445313 24.75 18.5 24.6875L23.4375 19.78125 Z M 16 22.15625L17.53125 22.46875L17.84375 24.03125L15.8125 24.625L15.40625 24.1875Z"
+                          fill="green" />
+                      </svg>
+                    </a>
+                    <p class="deleting-id" data-rowz_id='<%= rows.rowz_id %>'></p>
+                    <button class="delete-data">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30">
+                        <path
+                          d="M14.984375 2.4863281 A 1.0001 1.0001 0 0 0 14 3.5L14 4L8.5 4 A 1.0001 1.0001 0 0 0 7.4863281 5L6 5 A 1.0001 1.0001 0 1 0 6 7L24 7 A 1.0001 1.0001 0 1 0 24 5L22.513672 5 A 1.0001 1.0001 0 0 0 21.5 4L16 4L16 3.5 A 1.0001 1.0001 0 0 0 14.984375 2.4863281 z M 6 9L7.7929688 24.234375C7.9109687 25.241375 8.7633438 26 9.7773438 26L20.222656 26C21.236656 26 22.088031 25.241375 22.207031 24.234375L24 9L6 9 z"
+                          fill="red" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              <% } %>
+            </div>
+          <% }) %>
+        </div>
+      
+        
+      
+
+
+
+    <script>
+      var deletingbtn = document.querySelectorAll('.delete-data');
+      var deletingid = document.querySelectorAll('.deleting-id');
+      var deletingColumn = document.querySelectorAll('.deleting-column')
+
+
+
+      setTimeout((e) => {
+        history.replaceState(null, null, '/activitiesPage/<%= tablez.act_id %>');
+      }, 2000);
+
+
+
+      let counter = 0;
+
+      let counterColumn = 0;
+
+      deletingColumn.forEach((delCol, key) => {
+
+        delCol.addEventListener('click', (e) => {
+           document.body.style.cursor = 'progress'
+          counterColumn = key
+          var col_Id = deletingColumn[counterColumn].dataset.col_id
+          console.log(col_Id);
+          fetch('/delete-column/' + col_Id, {
+            method: 'DELETE'
+          }).then(resp => {
+            return resp.json();
+          }).then(data => {
+            window.location.reload();
+          });
+        })
+      })
+
+
+      if (Number('<%= tablez.isDay%>')) {
+        document.querySelector('.deleting-day').addEventListener('click', (e) => {
+          fetch('/delete-day/<%= tablez.tablez_id %>', {
+            method: 'PUT'
+          }).then(resp => {
+            return resp.json();
+          }).then(data => {
+            window.location.reload();
+          });
+
+        })
+      }
+
+      if (Number('<%= tablez.isDate%>')) {
+        document.querySelector('.deleting-date').addEventListener('click', (e) => {
+          console.log('ss');
+
+          fetch('/delete-date/<%= tablez.tablez_id %>', {
+            method: 'PUT'
+          }).then(resp => {
+            return resp.json();
+          }).then(data => {
+            window.location.reload();
+          });
+        })
+      }
+
+
+
+
+      deletingbtn.forEach((btn, key) => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+           document.body.style.cursor = 'progress'
+          counter = key;
+
+          var row_id = deletingid[counter].dataset.rowz_id;
+
+          fetch('/delete-data/' + row_id, {
+            method: 'DELETE'
+          }).then(resp => {
+            return resp.json();
+          }).then(data => {
+            window.location.reload();
+          });
+        });
+      });
+    </script>

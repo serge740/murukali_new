@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('./partials/head.ejs') %>
+
+<body>
+    <%- include('./partials/nav.ejs') %>
+
+    <div class="create-column">
+        <h1 style="text-transform: capitalize; font-size: 40px;">Create Column</h1>
+
+        <div class="auto-column">
+            <!-- Existing code for date and day columns selection -->
+            <% if (table.isDate) { %>
+            <div class="isTime">
+                <label for="isDate">Already add date column to your table</label>
+                <select id="isDate" onfocus="this.size=2" onblur="this.size = 0" onchange="this.size=1; this.blur()" name="isDate">
+                    <option value="1">Yes</option>
+                    <option value='0'>No</option>
+                </select>
+            </div>
+            <% } else { %>
+            <div class="isTime">
+                <label for="isDate">Add column of date</label>
+                <select id="isDate" onfocus="this.size=2" onblur="this.size = 0" onchange="this.size=1; this.blur()" name="isDate">
+                    <option value='0'>No</option>
+                    <option value="1">Yes</option>
+                </select>
+            </div>
+            <% } %>
+            <% if (table.isDay) { %>
+            <div class="isTime">
+                <label for="isDay">Already add day column to your table</label>
+                <select id="isDay" onfocus="this.size=2" onblur="this.size = 0" onchange="this.size=1; this.blur()" name="isDay">
+                    <option value="1">Yes</option>
+                    <option value='0'>No</option>
+                </select>
+            </div>
+            <% } else { %>
+            <div class="isTime">
+                <label for="isDay">Add column of day</label>
+                <select id="isDay" onfocus="this.size=2" onblur="this.size = 0" onchange="this.size=1; this.blur()" name="isDay">
+                    <option value='0'>No</option>
+                    <option value="1">Yes</option>
+                </select>
+            </div>
+            <% } %>
+        </div>
+
+        <hr width="100%">
+
+        <form id="column-form">
+            <h2>Create your <span>own column</span></h2>
+
+            <!-- Empty container for dynamic columns -->
+            <div id="dynamic-columns-container"></div>
+
+            <div class="add-another-column">
+                Add another column
+            </div>
+
+            <div class="sub-btn">
+                <a href="/activitiesPage/<%= table.act_id %>">Go back</a>
+                <button type="submit" class="saving">Save</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const columnForm = document.getElementById('column-form');
+        const dynamicColumnsContainer = document.getElementById('dynamic-columns-container');
+        const addAnotherColumnButton = document.querySelector('.add-another-column');
+
+        var counter = 0
+        function countCounter(){
+            counter++
+        }
+        // Function to create a new .wwa container
+        function createNewWwa() {
+            countCounter()
+            // Create the container div
+
+            const wwaDiv = document.createElement('div');
+            const head1 = document.createElement('h1');
+            head1.textContent = 'column ' + counter+'*'
+            wwaDiv.classList.add('wwa');
+
+            // Create the label and input for column name
+            const colNameLabel = document.createElement('label');
+            colNameLabel.setAttribute('for', 'col-name');
+            colNameLabel.textContent = 'Column Name*';
+
+            const colNameInput = document.createElement('input');
+            colNameInput.setAttribute('type', 'text');
+            colNameInput.setAttribute('id', 'col-name');
+            colNameInput.setAttribute('name', 'col-name');
+            colNameInput.setAttribute('maxlength', '13');
+            colNameInput.setAttribute('placeholder', 'Enter the name of the column');
+            colNameInput.setAttribute('required', true);
+            colNameInput.setAttribute('data-tableid', '<%=tableId %>'); // or set this via JS if needed
+
+            // Create the label and select for column type
+            const colTypeLabel = document.createElement('label');
+            colTypeLabel.setAttribute('for', 'col-type');
+            colTypeLabel.textContent = 'Column Type*';
+
+            const colTypeSelect = document.createElement('select');
+            colTypeSelect.setAttribute('id', 'col-type');
+            colTypeSelect.setAttribute('name', 'col-type');
+            colTypeSelect.setAttribute('onfocus', "this.size=2");
+            colTypeSelect.setAttribute('onblur', "this.size = 0");
+            colTypeSelect.setAttribute('onchange', "this.size=1; this.blur(); handleColumnTypeChange(event);");
+
+            const textOption = document.createElement('option');
+            textOption.setAttribute('value', 'text');
+            textOption.textContent = 'Text';
+
+            const numberOption = document.createElement('option');
+            numberOption.setAttribute('value', 'number');
+            numberOption.textContent = 'Number';
+
+            colTypeSelect.appendChild(textOption);
+            colTypeSelect.appendChild(numberOption);
+
+            // Append everything to the wwaDiv
+            wwaDiv.appendChild(head1)
+            wwaDiv.appendChild(colNameLabel);
+            wwaDiv.appendChild(colNameInput);
+            wwaDiv.appendChild(colTypeLabel);
+            wwaDiv.appendChild(colTypeSelect);
+
+            // Return the constructed div
+            return wwaDiv;
+        }
+
+        // Function to add a new column input set
+        function addNewColumn() {
+            const newWwa = createNewWwa(); // Create the new .wwa element
+            dynamicColumnsContainer.appendChild(newWwa); // Append the new .wwa element to the container
+        }
+
+        // Add a new column on button click
+        addAnotherColumnButton.addEventListener('click', () => {
+            addNewColumn();
+        });
+
+        // Handle form submission
+        columnForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const dataFOrmButton = document.querySelector("#column-form button")
+                    dataFOrmButton.style.pointerEvents = 'none'
+                    dataFOrmButton.textContent = 'saving...'
+                    dataFOrmButton.style.backgroundColor = 'rgba(255, 85, 0, 0.607)'
+                    document.body.style.cursor = 'progress'
+
+            const formData = [];
+            const isDate = document.querySelector('#isDate').value === '1';
+            const isDay = document.querySelector('#isDay').value === '1';
+
+            // Gather data from each .wwa element
+            document.querySelectorAll('.wwa').forEach(wwa => {
+                const column_name = wwa.querySelector('input[name="col-name"]').value;
+                const isType = wwa.querySelector('select[name="col-type"]').value;
+                const isTotal = wwa.querySelector('select[name="col-total"]') ? wwa.querySelector('select[name="col-total"]').value === '1' : false;
+                const table_id = wwa.querySelector('input[name="col-name"]').dataset.tableid;
+
+                formData.push({ column_name, isType, isTotal, table_id });
+            });
+
+            const payload = {
+                isDate,
+                isDay,
+                columns: formData
+            };
+
+            fetch('/create-column', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            })
+            .then(resp => resp.json())
+            .then(data => {
+                // document.body.style.cursor = 'normal'
+                window.location.href = data;
+
+            });
+        });
+
+        // Function to handle the change in column type
+        function handleColumnTypeChange(event) {
+            const colType = event.target.value;
+            const wwa = event.target.closest('.wwa');
+            const existingTotalLabel = wwa.querySelector('label[for="col-total"]');
+            const existingTotalSelect = wwa.querySelector('select[name="col-total"]');
+
+            if (colType === 'number' && !existingTotalLabel && !existingTotalSelect) {
+                const totalLabel = document.createElement('label');
+                totalLabel.textContent = 'Total*';
+                totalLabel.setAttribute('for', 'col-total');
+
+                const totalSelect = document.createElement('select');
+                totalSelect.name = 'col-total';
+                totalSelect.setAttribute('onfocus', "this.size=2");
+                totalSelect.setAttribute('onblur', "this.size=0");
+                totalSelect.setAttribute('onchange', "this.size=1; this.blur()");
+
+                const noOption = document.createElement('option');
+                noOption.value = '0';
+                noOption.textContent = 'No';
+
+                const yesOption = document.createElement('option');
+                yesOption.value = '1';
+                yesOption.textContent = 'Yes';
+
+                totalSelect.appendChild(noOption);
+                totalSelect.appendChild(yesOption);
+
+                wwa.appendChild(totalLabel);
+                wwa.appendChild(totalSelect);
+            } else if (colType !== 'number' && existingTotalLabel && existingTotalSelect) {
+                wwa.removeChild(existingTotalLabel);
+                wwa.removeChild(existingTotalSelect);
+            }
+        }
+
+        // Initial addition of one column input set
+        addNewColumn();
+    </script>
+</body>
+</html>

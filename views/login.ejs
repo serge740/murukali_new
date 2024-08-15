@@ -1,0 +1,140 @@
+<%- include('./partials/head.ejs') %>
+
+    <body>
+
+        <!-- <h1>login</h1> -->
+        <div class="create login">
+            <div class="create-side">
+
+
+                <div class="create-left">
+                    <img src="/login.png" alt="">
+                </div>
+
+                <div class="create-right">
+                    <h1><span class="shit hi1">login</span></h1>
+                    <form id="login-form">
+                        <h1><span class="shit hi2">login</span></h1>
+                        <label for="username">username:</label>
+                        <div class="input-password">
+                            <input type="text" class="username" placeholder="enter your username">
+                            <p class="red err-username"></p>
+                        </div>
+
+                        <label for="password">password:</label>
+                        <div class="input-password">
+                            <input type="password" autocomplete="off" id="login-password"
+                                placeholder="enter your password">
+                            <div class="input-nav">
+                                <h4 class="change-type">show password</h4>
+                                <p class="red err-password"></p>
+                            </div>
+                        </div>
+
+                        <button>login</button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+
+        <script>
+            var changeType = document.querySelector('.change-type')
+            var username = document.querySelector('.username')
+            var Password = document.getElementById('login-password')
+            var errPass = document.querySelector('.err-password')
+            var errUser = document.querySelector('.err-username')
+            var changeBoolean = false
+            const loginForm = document.getElementById('login-form')
+
+
+
+
+            changeType.addEventListener('click', () => {
+                changeBoolean = !changeBoolean
+
+
+                if (changeBoolean) {
+                    changeType.textContent = 'hide password'
+                    Password.type = 'text'
+                }
+                else {
+                    changeType.textContent = 'show password'
+                    Password.type = 'password'
+                }
+            })
+
+            Password.addEventListener('input', (e) => {
+                if (e.target.value === "" || e.target.value === null) {
+                    return errPass.textContent = 'please enter the password!!'
+                }
+                if (e.target.value !== "" || e.target.value !== null) {
+                    return errPass.textContent = ''
+                }
+            })
+            username.addEventListener('input', (e) => {
+                if (e.target.value === "" || e.target.value === null) {
+                    return errUser.textContent = 'please enter the username!!'
+                }
+                if (e.target.value !== "" || e.target.value !== null) {
+                    return errUser.textContent = ''
+                }
+            })
+            
+            
+            
+            
+            
+            loginForm.addEventListener("submit",(e)=>{
+                e.preventDefault()
+
+                 document.body.style.cursor = 'progress'
+
+
+                if (Password.value === "" || Password.value === null ) {
+                    return errPass.textContent = 'please enter the password!!'
+                }
+
+                if (username.value === "" ||  username.value === null ) {
+                    return errUser.textContent = 'please enter the username!!'
+                }
+
+                if ( username.value !== "" ||  username.value !== null && Password.value !== "" || Password.value !== null ) {
+
+            fetch('/auth/login',{
+                method:'POST',
+                headers:{"Content-Type":"Application/json"},
+                body:JSON.stringify({u_name:username.value,u_password:Password.value})
+            }).then(res=>{
+                return res.json()
+            })
+            .then(data=>{
+               
+                console.log(data);
+                
+                if(data.where === 'password'){
+                    return errPass.textContent = data.message
+                }
+
+                if(data.where === 'username'){
+                    return errUser.textContent = data.message
+                }
+
+                if(data.message== 'success'){
+                    window.location.href=data.redirect
+                }
+            })
+         
+
+        }
+            })
+
+
+
+
+        </script>
+
+    </body>
+
+    </html>

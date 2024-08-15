@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('./partials/head.ejs') %>
+
+<body>
+    <%- include('./partials/delete.warning.ejs') %>
+
+    <%- include('./partials/nav.ejs') %>
+    
+    <div id="home">
+        <div class="home-nav">
+            <div class="home-head">
+                <h1>
+                    <%= moment().format('MMMM') %>
+                </h1>
+                <p>Today is <%= moment().format('dddd , MMM Do, YYYY') %></p>
+            </div>
+            <input type="text" id="search" autocomplete="off" placeholder="search">
+        </div>
+
+        <div class="home-cards">
+            <% if (activities.length > 0) { %>
+                <% activities.forEach(activity => { %>
+                    <div class="act-box">
+                        <p class="purpose">
+                            <%= activity.act_purpose %>
+                        </p>
+                        <hr>
+                        <a href="/activitiesPage/<%= activity.act_id %>">
+                            <h1><%= activity.act_name %></h1>
+                            <p><%= activity.act_description %></p>
+                        </a>
+                        <hr>
+                        <p><%- moment(activity.act_date).fromNow() %></p>
+                        <p><%- moment(activity.act_date).format('LLLL') %></p>
+                        <div class="delete" data-id="<%= activity.act_id %>">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path d="M3 3H21V5H3z" fill="rgb(242 101 34)" />
+                                <path d="M16.1,22H7.9c-1,0-1.9-0.7-2-1.7L4,4.1l2-0.2L7.9,20l8.2,0L18,3.9l2,0.2l-1.9,16.1C18,21.3,17.1,22,16.1,22z" fill="rgb(242 101 34)" />
+                                <path d="M5,4l1.9,16.1c0.1,0.5,0.5,0.9,1,0.9h8.2 c0.5,0,0.9-0.4,1-0.9L19,4H5z" opacity=".3" fill="rgb(242 101 34)" />
+                                <path d="M15 3L15 4 9 4 9 3 10 2 14 2z" fill="rgb(242 101 34)" />
+                            </svg>
+                        </div>
+                    </div>
+                <% }) %>
+                <% } else { %>
+                    <p>No activities, so add some</p>
+                    <% } %>
+                    <p  id="no-results-message" style="display: none;color: red;">No matching activities found.</p>
+        </div>
+    </div>
+
+    <script>
+      var delWarning = document.querySelector('.del-warning');
+var actionYes = document.querySelector(".action-yes");
+var deleteId = document.querySelectorAll('.delete');
+var input = document.getElementById('search');
+var actBox = document.querySelectorAll('.act-box');
+var noResultsMessage = document.getElementById('no-results-message');
+let counter = 0;
+
+var link2 = document.querySelector('.links-2')
+
+var menu2 = document.querySelector('.menu2')
+
+var nav2 = document.querySelector(".nav2")
+
+
+menu2.addEventListener('click',()=>{
+    link2.classList.toggle('show-links-2')
+    nav2.classList.toggle('show-nav2')
+})
+
+
+
+
+function actionNo() {
+    delWarning.classList.remove('show');
+}
+
+deleteId.forEach((del, key) => {
+    del.addEventListener('click', () => {
+        counter = key;
+        delWarning.classList.add('show');
+    });
+});
+
+
+
+
+actionYes.addEventListener('click', () => {
+    var id = deleteId[counter].dataset.id;
+    fetch('/delete/' + id, {
+        method: 'DELETE'
+    }).then(resp => resp.json())
+      .then(data => window.location.reload());
+});
+
+input.addEventListener('keyup', (e) => {
+    var inputValue = e.target.value.toLowerCase();
+    let hasVisibleResults = false;
+
+    actBox.forEach(box => {
+        var titleElement = box.querySelector('h1');
+        var titleText = titleElement.textContent.toLowerCase();
+
+        // Reset the HTML to the original state before highlighting
+        titleElement.innerHTML = titleElement.textContent;
+
+        if (titleText.indexOf(inputValue) !== -1) {
+            box.style.display = 'flex';
+
+            // Highlight the matching text
+            var regex = new RegExp(`(${inputValue})`, 'gi');
+            titleElement.innerHTML = titleElement.innerHTML.replace(regex, '<span class="highlight">$1</span>');
+
+            hasVisibleResults = true;
+        } else {
+            box.style.display = 'none';
+        }
+    });
+
+    // Show or hide the no results message
+    if (hasVisibleResults) {
+        noResultsMessage.style.display = 'none';
+    } else {
+        noResultsMessage.style.display = 'block';
+    }
+
+
+});
+
+    </script>
+</body>
+</html>

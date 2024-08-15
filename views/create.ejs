@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('./partials/head.ejs') %>
+
+    <body>
+
+        <%- include('./partials/nav.ejs') %>
+
+            <div class="create">
+                <div class="create-side">
+                    <div class="create-left">
+                        <img src="/img/create1.jpg" class="hide-img show-img" alt="">
+                        <!-- <img src="/img/create2.jpg" class="hide-img" alt="">
+                <img src="/img/create3.jpg" class="hide-img" alt=""> -->
+                    </div>
+
+                    <div class="create-right ">
+                        <h1>create your collective activity</h1>
+                        <form id="create-act">
+
+                            <label for="name">name*</label>
+                            <input type="text" id="act_name" name="name" autocomplete="off"
+                                placeholder="what is the name of the activity?" required>
+                            <label for="purpose">purpose*</label>
+                            <input type="text" id="purpose" name="purpose" autocomplete="off"
+                                placeholder="what is the purpose of who writing it" required>
+                            <label for="description">description(optional)*</label>
+                            <textarea type="text" id="act_desc" name="description"
+                                placeholder="what is the description of the activity?" autocomplete="off"></textarea>
+
+                            <button>add activity</button>
+                        </form>
+
+
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                var create_act = document.getElementById('create-act')
+                var act_name = document.querySelector("#act_name")
+                var act_purpose = document.querySelector("#purpose")
+                var act_desc = document.querySelector("#act_desc")
+                var link2 = document.querySelector('.links-2')
+
+                var menu2 = document.querySelector('.menu2')
+
+                var nav2 = document.querySelector(".nav2")
+
+
+                menu2.addEventListener('click', () => {
+                    link2.classList.toggle('show-links-2')
+                    nav2.classList.toggle('show-nav2')
+                })
+
+
+
+                create_act.addEventListener('submit', (e) => {
+                    e.preventDefault()
+
+                    var dataFOrmButton = document.querySelector("#create-act button")
+                    dataFOrmButton.style.pointerEvents = 'none'
+                    dataFOrmButton.textContent = 'adding it...'
+                    dataFOrmButton.style.backgroundColor = 'rgba(255, 85, 0, 0.607)'
+                     document.body.style.cursor = 'progress'
+
+                    var createObj = { name: act_name.value, purpose: act_purpose.value, description: act_desc.value }
+
+                    fetch('/create', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'Application/json' },
+                        body: JSON.stringify(createObj)
+                    })
+                        .then((resp) => {
+                            return resp.json()
+                        })
+                        .then(data => {
+
+                            window.location.href = '/home'
+
+                        })
+                })
+
+
+
+            </script>
+
+    </body>
+
+</html>

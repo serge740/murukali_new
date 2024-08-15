@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('./partials/head.ejs') %>
+
+    <body>
+
+        <%- include('./partials/nav.ejs') %>
+
+            <div class="add-data">
+                <h1>add some data</h1>
+
+                <form id="data-form">
+
+                    <div class="act_id" data-act_id="<%= act_id %>"></div>
+
+                    <% tables.forEach(table=> { %>
+
+                        <label for="<%=table.col_name %>">
+                            <%= table.col_name %>*
+                        </label>
+
+                        <input type="<%= table.col_type %>" data-columnid="<%= table.col_id %>"
+                            data-tableid="<%= table.tablez_id %>" id="inputs" name="<%= table.col_name %>" required>
+
+                        <% }) %>
+
+
+                            <% if(tables[0].isDay || tables[0].isDate){ %>
+
+                                <label for="date">date(optional)*</label>
+
+                                <input type="datetime-local" name="date" id="date">
+
+                                <% } else{ %>
+
+                                    <% } %>
+                                        <div class="sub-btn">
+                                            <a href="/activitiesPage/<%= act_id %>"> go back</a>
+                                            <button>
+                                                submit
+                                            </button>
+                                        </div>
+
+                </form>
+            </div>
+
+            <script>
+                var dataForm = document.getElementById('data-form')
+
+                var inputs = document.querySelectorAll('#inputs')
+                var act_id = document.querySelector('.act_id')
+
+                var link2 = document.querySelector('.links-2')
+
+                var menu2 = document.querySelector('.menu2')
+
+                var nav2 = document.querySelector(".nav2")
+
+
+                menu2.addEventListener('click', () => {
+                    link2.classList.toggle('show-links-2')
+                    nav2.classList.toggle('show-nav2')
+                })
+
+
+
+                console.log();
+
+                var sere = ''
+                dataForm.addEventListener('submit', (e) => {
+                    e.preventDefault()
+                    console.log('niss');
+
+                    if (Number('<%= tables[0].isDay %>') || Number('<%= tables[0].isDate %>')) {
+                        var dateInput = document.getElementById('date').value || null
+                    }
+                    else {
+                        var dateInput = null
+                    }
+
+                    console.log(dateInput);
+
+
+
+
+                    const niggaa = Array.from(inputs)
+                    let newarr = []
+
+
+                    niggaa.forEach(input => {
+                        const valuez = [null, input.value, Number(input.dataset.columnid)]
+                        newarr.push(valuez)
+                    })
+
+
+
+                    var ida = inputs[0].dataset.tableid
+
+                    var dataFOrmButton = document.querySelector("#data-form button")
+                    dataFOrmButton.style.pointerEvents = 'none'
+                    dataFOrmButton.textContent = 'submiting it...'
+                    dataFOrmButton.style.backgroundColor = 'rgba(255, 85, 0, 0.607)'
+                    document.body.style.cursor = 'progress'
+
+
+                    fetch('/create-rowz/' + ida, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'Application/json' },
+                        body: JSON.stringify({ newarr, dateInput })
+                    })
+                        .then((resp) => {
+                            return resp.json()
+                        })
+                        .then(data => {
+
+                            window.location.href = '/activitiesPage/' + act_id.dataset.act_id + '?message=the data have beem added successfully'
+
+                        })
+
+
+                })
+
+
+
+
+
+            </script>
+
+    </body>
+
+</html>

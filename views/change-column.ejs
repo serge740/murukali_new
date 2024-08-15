@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include('./partials/head.ejs') %>
+
+    <body>
+
+        <%- include('./partials/nav.ejs') %>
+
+            <div id="change">
+                <form id="change-form">
+                    <h1>
+                        change the name of the column which is called <span class="shit">
+                            <%= col.col_name %>
+                        </span>
+                    </h1>
+
+                    <input type="text" value="<%= col.col_name %>" placeholder="change the column name">
+                    <button>change</button>
+
+                </form>
+                <!-- <p style="color: red;">REFRESH AFTER YOU CLICK CHANGE</p> -->
+            </div>
+
+            <script>
+                const changeForm = document.getElementById('change-form')
+
+                var chaningInput = document.querySelector('#change-form input')
+                var link2 = document.querySelector('.links-2')
+
+                var menu2 = document.querySelector('.menu2')
+
+                var nav2 = document.querySelector(".nav2")
+
+
+                menu2.addEventListener('click', () => {
+                    link2.classList.toggle('show-links-2')
+                    nav2.classList.toggle('show-nav2')
+                })
+                const queryString = window.location.search;
+                const params = new URLSearchParams(queryString);
+
+                const act_id = params.get('act_id')
+                console.log(act_id);
+
+
+                changeForm.addEventListener('submit', (e) => {
+                    e.preventDefault()
+
+                    var dataFOrmButton = document.querySelector("#change-form button")
+                    dataFOrmButton.style.pointerEvents = 'none'
+                    dataFOrmButton.textContent = 'changing...'
+                    dataFOrmButton.style.backgroundColor = 'rgba(255, 85, 0, 0.607)'
+                    document.body.style.cursor = 'progress'
+
+                    var changeCol = { name: chaningInput.value }
+                    console.log(changeCol);
+
+
+                    fetch('/change-column/<%= id %>', {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'Application/json' },
+                        body: JSON.stringify(changeCol)
+                    })
+                        .then((resp) => {
+                            return resp.json()
+                        })
+                        .then(data => {
+
+
+                            window.location.href = '/activitiesPage/' + act_id
+
+
+                        })
+                })
+
+
+            </script>
+    </body>
+
+</html>

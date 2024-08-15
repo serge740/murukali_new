@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('./partials/head.ejs') %>
+
+    <body>
+
+        <%- include('./partials/nav.ejs') %>
+            <div class="create-table">
+                <h1>create table</h1>
+                <form id="create-table">
+
+                    <label for="name">name*</label>
+                    <input type="text" name="name" autocomplete="off" id="tab_name"
+                        placeholder="what is the name of the table ?" required>
+
+                    <label for="description">description(optional)*</label>
+                    <textarea type="text" name="description" placeholder="what is the description of the activity?"
+                        id="tab_desc" autocomplete="off">
+
+        </textarea>
+
+                    <div class="sub-btn">
+                        <a href="/activitiesPage/<%= id %>"> go back</a>
+                        <button>
+                            submit
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+
+            <script>
+                var create_table = document.getElementById('create-table')
+                var table_name = document.querySelector("#tab_name")
+
+                var table_desc = document.querySelector("#tab_desc")
+                var link2 = document.querySelector('.links-2')
+
+                var menu2 = document.querySelector('.menu2')
+
+                var nav2 = document.querySelector(".nav2")
+
+
+                menu2.addEventListener('click', () => {
+                    link2.classList.toggle('show-links-2')
+                    nav2.classList.toggle('show-nav2')
+                })
+
+
+
+
+                create_table.addEventListener('submit', (e) => {
+                    e.preventDefault()
+
+                    var dataFOrmButton = document.querySelector("#create-table button")
+                    dataFOrmButton.style.pointerEvents = 'none'
+                    dataFOrmButton.textContent = 'submiting...'
+                    dataFOrmButton.style.backgroundColor = 'rgba(255, 85, 0, 0.607)'
+                    document.body.style.cursor = 'progress'
+
+                    var createTab = { name: table_name.value, description: table_desc.value, act_id: Number("<%= id%>") }
+                    console.log(createTab);
+
+
+                    fetch('/create-table', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'Application/json' },
+                        body: JSON.stringify(createTab)
+                    })
+                        .then((resp) => {
+                            return resp.json()
+                        })
+                        .then(data => {
+
+                            window.location.href = '/activitiesPage/<%= id %>?message=you have created table successfully'
+
+                        })
+                })
+
+
+
+            </script>
+
+    </body>
+
+</html>

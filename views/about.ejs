@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('./partials/head.ejs') %>
+
+    <body>
+
+
+        <%- include('./partials/nav.ejs') %>
+
+            <div class="about">
+                <h1>about this website</h1>
+                <p>
+                    we maintain meticulous records of user interactions on our website. These records include details
+                    such as page visits, form submissions, click-through paths, and timestamps. By capturing this data,
+                    we gain insights into user behavior, preferences, and trends. Our web records serve as a valuable
+                    resource for optimizing content, enhancing user experience, and making informed decisions. Rest
+                    assured, we handle this information securely and in compliance with privacy regulations.this wesbite
+                    was made to help people to manage and organise their task or activities so easily
+                    with click on thier devices . help you to manage and the time you record the time and when it
+                    happened.
+                </p>
+                <%- include('./partials/footer.ejs') %>
+            </div>
+            <script>
+                var link2 = document.querySelector('.links-2')
+
+                var menu2 = document.querySelector('.menu2')
+
+                var nav2 = document.querySelector(".nav2")
+                
+
+
+                menu2.addEventListener('click', () => {
+                    link2.classList.toggle('show-links-2')
+                    nav2.classList.toggle('show-nav2')
+                })
+
+
+            </script>
+    </body>
+
+</html>

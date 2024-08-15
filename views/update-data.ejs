@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('./partials/head.ejs') %>
+
+    <body>
+        <%- include('./partials/nav.ejs') %>
+
+            <div class="add-data">
+                <h1>Edit Some Data</h1>
+                <form id="update-data-form">
+                    <% dataz.forEach(datas=> { %>
+                        <label for="<%= datas.col_name %>">
+                            <%= datas.col_name %>*
+                        </label>
+                        <input type="<%= datas.col_type %>" value="<%= datas.dataz_value || '' %>"
+                            data-columnid="<%= datas.col_id %>" data-rowzid="<%= datas.rows_id %>"
+                            name="<%= datas.col_name %>" required>
+                        <% }) %>
+                            <div class="sub-btn">
+                                <a href="/activitiesPage/<%= act_id %>"> go back</a>
+                                <button>
+                                    submit
+                                </button>
+                            </div>
+                </form>
+            </div>
+
+            <script>
+
+                const dataForm = document.getElementById('update-data-form');
+                const inputs = dataForm.querySelectorAll('input');
+                var link2 = document.querySelector('.links-2')
+
+                var menu2 = document.querySelector('.menu2')
+
+                var nav2 = document.querySelector(".nav2")
+
+
+                menu2.addEventListener('click', () => {
+                    link2.classList.toggle('show-links-2')
+                    nav2.classList.toggle('show-nav2')
+                })
+
+
+
+                dataForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+
+                    const newarr = Array.from(inputs).map(input => [
+                        input.getAttribute('data-columnid'),
+                        input.getAttribute('data-rowzid'),
+                        input.value
+                    ]);
+
+                    var dataFOrmButton = document.querySelector("#update-data-form button")
+                    dataFOrmButton.style.pointerEvents = 'none'
+                    dataFOrmButton.textContent = 'submiting it...'
+                    dataFOrmButton.style.backgroundColor = 'rgba(255, 85, 0, 0.607)'
+                     document.body.style.cursor = 'progress'
+
+                    fetch('/update-data/<%= dataz[0].rows_id %>', {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(newarr)
+                    })
+                        .then(resp => resp.json())
+                        .then(data => {
+                            if (data.message) {
+                                window.location.href = '/activitiesPage/<%= act_id %>?message=' + data.message || 'it has been updated sucessfully';
+                            } else {
+                                console.error('Update failed:', data);
+                            }
+                        })
+                        .catch(err => console.error('Fetch error:', err));
+                });
+            </script>
+    </body>
+
+</html>
