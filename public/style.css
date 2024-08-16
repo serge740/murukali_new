@@ -811,7 +811,7 @@ textarea:focus::placeholder {
     background-color: transparent;
 }
 
-.create-table-link svg {
+.create-table-link svg,.create-table-link1 svg,.create-table-link2 svg {
     height: 25px;
     width: 25px;
     /* fill: rgb(60, 113, 94); */

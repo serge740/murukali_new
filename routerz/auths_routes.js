@@ -9,40 +9,37 @@ const date = () => {
     return new Date()
 }
 
-router.get('/login',(req,res)=>{
+router.get('/login', (req, res) => {
     res.render('login')
 })
 
-router.post('/login',(req,res)=>{
-    const {u_name,u_password} = req.body
-    db.query('SELECT * FROM murukali.userz WHERE u_name = ?  ',[u_name],(err,data)=>{
+router.post('/login', (req, res) => {
+    const { u_name, u_password } = req.body
+    db.query('SELECT * FROM murukali.userz WHERE u_name = ?  ', [u_name], (err, data) => {
 
-        if(err) return res.json({message:'server error',error:err})
-    
-            if(data.length === 0){
-                return res.json({message:'username doesnt exist',where:'username'})
-            }
-            const check = data[0].u_password == u_password
-            if( !check ){
-                return res.json({message:'password doesnt exist',where:'password'})
-            }
+        if (err) return res.json({ message: 'server error', error: err })
 
-            const {u_password:sss,...others} = data[0]
+        if (data.length === 0) {
+            return res.json({ message: 'username doesnt exist', where: 'username' })
+        }
+        const check = data[0].u_password == u_password
+        if (!check) {
+            return res.json({ message: 'password doesnt exist', where: 'password' })
+        }
 
-            const access_token = jwt.sign(others,process.env.ACCESS_TOKEN_SECRET,{expiresIn:'24h'})
-            res.cookie('access_token',access_token,{httpOnly:true,secure:true,maxAge:24 * 60 * 60 *1000})
-            const refresh_token = jwt.sign(others,process.env.REFRESH_TOKEN_SECRET)
-            res.cookie('refresh_token',refresh_token,{httpOnly:true,secure:true,sameSite:'strict',maxAge:24 * 60 * 60 * 1000 }).json({message:'success',redirect:"/home"})
-        })
-            
+        const { u_password: sss, ...others } = data[0]
+
+        const access_token = jwt.sign(others, process.env.ACCESS_TOKEN_SECRET)
+        res.cookie('access_token', access_token, { httpOnly: true, secure: true, sameSite: 'strict', maxAge: 24 * 60 * 60 * 1000 }).json({ message: 'success', redirect: "/home" })
+    })
+
 })
 
 
 
 router.post('/logout', (req, res) => {
     res.clearCookie('access_token')
-       .clearCookie('refresh_token')
-       .redirect('/auth/login')
+        .redirect('/auth/login')
 });
 
 
