@@ -1249,13 +1249,7 @@ span.shit {
 
 
 @media (max-width:1144px) {
-    .del-warning{
-        height: 150dvh;
-        display: flex;
-
-        justify-content: center;
-        align-items: center;
-    }
+   
 
     .del-box{
         width: 320px ;
