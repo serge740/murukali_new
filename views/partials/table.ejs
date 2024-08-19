@@ -54,8 +54,8 @@
 
             }
             %>
-            <div class="data-values <%= dataEntry ? '' : 'red' %>">
-              <%= dataEntry ? dataEntry.dataz_value : 'empty' %>
+            <div class="data-values">
+              <%= dataEntry ? dataEntry.dataz_value : '---' %>
             </div>
             <% }) %>
               <% if (column.isTotal) { %>
