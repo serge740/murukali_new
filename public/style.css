@@ -931,7 +931,7 @@ textarea:focus::placeholder {
     align-items: center;
     flex-direction: column;
     text-transform: capitalize;
-    height: 80vh;
+    /* height: 80vh; */
     width: 78%;
     gap: 10px;
 }
