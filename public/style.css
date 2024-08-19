@@ -1025,8 +1025,9 @@ textarea:focus::placeholder {
     justify-content: center;
     align-items: center;
     flex: 0 1 auto;
-
+    word-break: keep-all;
     min-width: 250px;
+    
     flex-direction: column;
     gap: 30px;
 }
@@ -1040,6 +1041,7 @@ textarea:focus::placeholder {
     border-bottom: 1px solid;
     text-transform: capitalize;
     padding: 0px 0px 5px;
+    font-size: 25px;
     width: 100%;
     text-align: center;
 
