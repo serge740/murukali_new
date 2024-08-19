@@ -47,18 +47,18 @@
           <%= column.col_name %>
         </h1>
         <% rowz.forEach((row) => { %>
-          <% 
-            const dataEntry = dataz.find(data => data.col_id === column.col_id && data.rowz_id === row.rowz_id);
-            const dataValue = dataEntry && dataEntry.dataz_value !== '' ? parseFloat(dataEntry.dataz_value) || 0 : 0;
-        
-            if (column.isTotal) {
-              totals[column.col_id] += dataValue;
-            }
-          %>
-          <div class="data-values <%= dataEntry && dataEntry.dataz_value !== '' ? '' : 'red' %>">
-            <%= dataEntry && dataEntry.dataz_value !== '' ? dataEntry.dataz_value : '-------' %>
-          </div>
-        <% }) %>
+  <% 
+    const dataEntry = dataz.find(data => data.col_id === column.col_id && data.rowz_id === row.rowz_id);
+    const dataValue = dataEntry && dataEntry.dataz_value !== '' ? parseFloat(dataEntry.dataz_value) || 0 : 0;
+
+    if (column.isTotal) {
+      totals[column.col_id] += dataValue;
+    }
+  %>
+  <div class="data-values <%= dataEntry && dataEntry.dataz_value !== '' ? '' : 'red' %>">
+    <%= dataEntry && dataEntry.dataz_value !== '' ? dataEntry.dataz_value : '---------' %>
+  </div>
+<% }) %>
               <% if (column.isTotal) { %>
                 <div class="data-values">
                   <strong>Total: <%= totals[column.col_id].toFixed(2) %></strong>
